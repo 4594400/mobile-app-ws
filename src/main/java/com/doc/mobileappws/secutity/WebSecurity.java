@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -28,7 +29,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .authenticated()
         .and()
         .addFilter(getAuthenticationFilter())
-        .addFilter(new AuthorizationFilter(authenticationManager()));
+        .addFilter(new AuthorizationFilter(authenticationManager()))
+        .sessionManagement()            // session won't be created, authorization by request
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
