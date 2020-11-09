@@ -3,6 +3,9 @@ package com.doc.mobileappws.service.impl;
 import com.doc.mobileappws.UserRepository;
 import com.doc.mobileappws.dto.UserDto;
 import com.doc.mobileappws.entity.UserEntity;
+import com.doc.mobileappws.exception.UserServiceException;
+import com.doc.mobileappws.model.response.ErrorMessage;
+import com.doc.mobileappws.model.response.ErrorMessages;
 import com.doc.mobileappws.service.UserService;
 import com.doc.mobileappws.utils.Utils;
 import org.springframework.beans.BeanUtils;
@@ -67,6 +70,20 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByUserId(userId);
         if(userEntity == null) throw new UsernameNotFoundException(userId);
         BeanUtils.copyProperties(userEntity, returnValue);
+        return returnValue;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if(userEntity == null) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        UserEntity updatedUserDetails = userRepository.save(userEntity);
+        BeanUtils.copyProperties(updatedUserDetails, returnValue);
         return returnValue;
     }
 }
