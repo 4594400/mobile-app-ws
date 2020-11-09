@@ -1,7 +1,9 @@
 package com.doc.mobileappws.controller;
 
 import com.doc.mobileappws.dto.UserDto;
+import com.doc.mobileappws.exception.UserServiceException;
 import com.doc.mobileappws.model.request.UserDetailsRequestModel;
+import com.doc.mobileappws.model.response.ErrorMessages;
 import com.doc.mobileappws.model.response.UserRest;
 import com.doc.mobileappws.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +42,7 @@ public class UserController {
                  )
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
         UserRest returnValue = new UserRest();
+        if(userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);
