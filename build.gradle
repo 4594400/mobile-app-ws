@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.11.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'war'
 }
 
 group = 'com.doc.mobileappws'
@@ -19,6 +20,7 @@ dependencies {
     implementation 'mysql:mysql-connector-java'
     implementation 'io.jsonwebtoken:jjwt:0.9.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    compileOnly 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
