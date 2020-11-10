@@ -24,11 +24,6 @@ public class MobileAppWsApplication extends SpringBootServletInitializer {
         return new SpringApplicationContext();
     }
 
-    /*@Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return super.configure(builder);
-    }*/
-
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(MobileAppWsApplication.class);
