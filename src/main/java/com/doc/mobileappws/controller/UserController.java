@@ -21,6 +21,7 @@ public class UserController {
 
     /**
      * localhost:8080/users/?page=0&limit=50
+     * after adding context-path: localhost:8080/mobile-app-ws/users/?page=2
      * @param page
      * @param limit
      * @return
