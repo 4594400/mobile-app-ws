@@ -1,10 +1,10 @@
 package com.doc.mobileappws.controller;
 
 import com.doc.mobileappws.dto.UserDto;
-import com.doc.mobileappws.exception.UserServiceException;
 import com.doc.mobileappws.model.request.UserDetailsRequestModel;
 import com.doc.mobileappws.model.response.*;
 import com.doc.mobileappws.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -68,8 +68,8 @@ public class UserController {
         //if(userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
         if(userDetails.getFirstName().isEmpty()) throw new NullPointerException("The object is null");
 
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createdUser = userService.createUser(userDto);
         BeanUtils.copyProperties(createdUser, returnValue);

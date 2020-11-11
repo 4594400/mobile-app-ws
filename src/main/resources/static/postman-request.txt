@@ -1,0 +1,23 @@
+POST:
+{
+    "firstName": "Mike",
+    "lastName": "Ivanov",
+    "email": "dealer6@gmail.com",
+    "password": "123456",
+    "addresses":[
+        {
+            "city":"Vancouver",
+            "country":"Canada",
+            "streetName":"123 Street",
+            "postalCode":"ABCCBA",
+            "type":"billing"
+        },
+        {
+            "city":"Vancouver",
+            "country":"Canada",
+            "streetName":"123 Street",
+            "postalCode":"ABCCBA",
+            "type":"shipping"
+        }
+    ]
+}
