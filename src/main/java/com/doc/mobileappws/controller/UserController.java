@@ -60,7 +60,7 @@ public class UserController {
      * @return
      */
     // first MediaType it is default returning type
-    @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+    @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType  .APPLICATION_JSON_VALUE},
                  produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
                  )
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
@@ -72,6 +72,7 @@ public class UserController {
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createdUser = userService.createUser(userDto);
+        returnValue = modelMapper.map(createdUser, UserRest.class);
         BeanUtils.copyProperties(createdUser, returnValue);
 
         return returnValue;
