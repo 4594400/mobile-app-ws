@@ -4,6 +4,7 @@ import com.doc.mobileappws.dto.AddressDto;
 
 import java.util.List;
 
-public interface AddressesService {
+public interface AddressService {
     List<AddressDto> getAddresses(String userId);
+    AddressDto getAddress(String addressId);
 }

@@ -4,7 +4,7 @@ import com.doc.mobileappws.dto.AddressDto;
 import com.doc.mobileappws.dto.UserDto;
 import com.doc.mobileappws.model.request.UserDetailsRequestModel;
 import com.doc.mobileappws.model.response.*;
-import com.doc.mobileappws.service.AddressesService;
+import com.doc.mobileappws.service.AddressService;
 import com.doc.mobileappws.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -23,7 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private AddressesService addressesService;
+    private AddressService addressService;
 
     /**
      * localhost:8080/users/?page=0&limit=50
@@ -114,15 +114,22 @@ public class UserController {
             MediaType.APPLICATION_JSON_VALUE})
     public List<AddressesRest> getUserAddresses(@PathVariable String id) {
         List<AddressesRest> returnValue = new ArrayList<>();
-        List<AddressDto> addressDto = addressesService.getAddresses(id);
+        List<AddressDto> addressDto = addressService.getAddresses(id);
 
         if(addressDto != null && !addressDto.isEmpty()) {
             Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
             returnValue = new ModelMapper().map(addressDto, listType);
         }
-
-
         return returnValue;
+    }
+
+    //localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4/addresses/FqaepwYNuXGKoWYF6nHw52rB2YSIy3
+    @GetMapping(path = "/{userId}/addresses/{addressId}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public AddressesRest getUserAddress(@PathVariable String addressId){
+        AddressDto addressDto = addressService.getAddress(addressId);
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(addressDto, AddressesRest.class);
     }
 
 }

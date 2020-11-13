@@ -5,7 +5,7 @@ import com.doc.mobileappws.entity.AddressEntity;
 import com.doc.mobileappws.entity.UserEntity;
 import com.doc.mobileappws.repository.AddressRepository;
 import com.doc.mobileappws.repository.UserRepository;
-import com.doc.mobileappws.service.AddressesService;
+import com.doc.mobileappws.service.AddressService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AddressesServiceImpl implements AddressesService {
+public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private UserRepository userRepository;
@@ -35,6 +35,16 @@ public class AddressesServiceImpl implements AddressesService {
             returnValue.add(modelMapper.map(addressEntity, AddressDto.class));
         }
 
+        return returnValue;
+    }
+
+    @Override
+    public AddressDto getAddress(String addressId) {
+        AddressDto returnValue = null;
+        AddressEntity addressEntity = addressRepository.findByAddressId(addressId);
+        if(addressEntity != null){
+            returnValue = new ModelMapper().map(addressEntity, AddressDto.class);
+        }
         return returnValue;
     }
 }
