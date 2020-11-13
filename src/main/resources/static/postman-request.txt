@@ -1,4 +1,4 @@
-POST:
+POST: localhost:8080/mobile-app-ws/users
 {
     "firstName": "Mike",
     "lastName": "Ivanov",

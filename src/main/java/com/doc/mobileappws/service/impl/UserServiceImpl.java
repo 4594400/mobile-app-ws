@@ -33,15 +33,14 @@ public class UserServiceImpl implements UserService {
     Utils utils;
     @Override
     public UserDto createUser(UserDto user) {
-        if(userRepository.findByEmail(user.getEmail()) != null){
-            throw new RuntimeException("Record already exist");
-        }
+        if (userRepository.findByEmail(user.getEmail()) != null)
+            throw new UserServiceException("Record already exists");
 
         for (int i = 0; i < user.getAddresses().size(); i++) {
             AddressDto address = user.getAddresses().get(i);
             address.setUserDetails(user);
             address.setAddressId(utils.generateAddressId(30));
-            user.getAddresses().set(i,address);
+            user.getAddresses().set(i, address);
         }
 
         ModelMapper modelMapper = new ModelMapper();

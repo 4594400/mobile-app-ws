@@ -1,15 +1,19 @@
 package com.doc.mobileappws.controller;
 
+import com.doc.mobileappws.dto.AddressDto;
 import com.doc.mobileappws.dto.UserDto;
 import com.doc.mobileappws.model.request.UserDetailsRequestModel;
 import com.doc.mobileappws.model.response.*;
+import com.doc.mobileappws.service.AddressesService;
 import com.doc.mobileappws.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +22,8 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AddressesService addressesService;
 
     /**
      * localhost:8080/users/?page=0&limit=50
@@ -73,7 +79,6 @@ public class UserController {
 
         UserDto createdUser = userService.createUser(userDto);
         returnValue = modelMapper.map(createdUser, UserRest.class);
-        BeanUtils.copyProperties(createdUser, returnValue);
 
         return returnValue;
     }
@@ -103,4 +108,21 @@ public class UserController {
 
         return returnValue;
     }
+
+    // localhost:8080/mobile-app-ws/users/6RsBi6oekKiZbEre5LjzwtWpT0qpoW/addresses
+    @GetMapping(path = "/{id}/addresses", produces = {MediaType.APPLICATION_XML_VALUE,  // first MediaType it is default returning type
+            MediaType.APPLICATION_JSON_VALUE})
+    public List<AddressesRest> getUserAddresses(@PathVariable String id) {
+        List<AddressesRest> returnValue = new ArrayList<>();
+        List<AddressDto> addressDto = addressesService.getAddresses(id);
+
+        if(addressDto != null && !addressDto.isEmpty()) {
+            Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
+            returnValue = new ModelMapper().map(addressDto, listType);
+        }
+
+
+        return returnValue;
+    }
+
 }
