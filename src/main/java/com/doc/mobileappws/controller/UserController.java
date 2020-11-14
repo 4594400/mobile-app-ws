@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -141,22 +141,17 @@ public class UserController {
                 .withRel("user");
 
         //  "http://localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4/addresses"
-        Link userAddressesLink = WebMvcLinkBuilder.linkTo(UserController.class)
-                .slash(userId)
-                .slash("addresses")
+        Link userAddressesLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserAddresses(userId))
+                //.slash(userId)
+                //.slash("addresses")
                 .withRel("addresses");
 
         //   "http://localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4/addresses/myiYTxY9nnPegQi4Tsnqchr2kCufbF"
-        Link selfLink = WebMvcLinkBuilder.linkTo(UserController.class)
-                .slash(userId)
-                .slash("addresses")
-                .slash(addressId)
+        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserAddress(userId, addressId))
+                //.slash(userId)
+                //.slash("addresses")
+                //.slash(addressId)
                 .withSelfRel();
-
-        //returnValue.add(userLink);
-        //returnValue.add(userAddressesLink);
-        //returnValue.add(selfLink);
-        //return returnValue;                  ***** OR ******
 
         return new EntityModel(returnValue, Arrays.asList(userLink, userAddressesLink, selfLink));
     }
