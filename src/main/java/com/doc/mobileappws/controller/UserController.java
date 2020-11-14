@@ -10,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -126,10 +128,33 @@ public class UserController {
     //localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4/addresses/FqaepwYNuXGKoWYF6nHw52rB2YSIy3
     @GetMapping(path = "/{userId}/addresses/{addressId}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public AddressesRest getUserAddress(@PathVariable String addressId){
+    public AddressesRest getUserAddress(@PathVariable String userId, @PathVariable String addressId){
         AddressDto addressDto = addressService.getAddress(addressId);
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(addressDto, AddressesRest.class);
+        AddressesRest returnValue = modelMapper.map(addressDto, AddressesRest.class);
+
+        // "http://localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4"
+        Link userLink = WebMvcLinkBuilder.linkTo(UserController.class)
+                .slash(userId)
+                .withRel("user");
+
+        //  "http://localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4/addresses"
+        Link userAddressesLink = WebMvcLinkBuilder.linkTo(UserController.class)
+                .slash(userId)
+                .slash("addresses")
+                .withRel("addresses");
+
+        //   "http://localhost:8080/mobile-app-ws/users/YmTGq5lo9vD2jdEZWHl7kRH7ndtzl4/addresses/myiYTxY9nnPegQi4Tsnqchr2kCufbF"
+        Link selfLink = WebMvcLinkBuilder.linkTo(UserController.class)
+                .slash(userId)
+                .slash("addresses")
+                .slash(addressId)
+                .withSelfRel();
+
+        returnValue.add(userLink);
+        returnValue.add(userAddressesLink);
+        returnValue.add(selfLink);
+        return returnValue;
     }
 
 }
