@@ -7,6 +7,7 @@ import com.doc.mobileappws.entity.UserEntity;
 import com.doc.mobileappws.exception.UserServiceException;
 import com.doc.mobileappws.model.response.ErrorMessages;
 import com.doc.mobileappws.service.UserService;
+import com.doc.mobileappws.utils.AmazonSES;
 import com.doc.mobileappws.utils.Utils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -56,6 +57,9 @@ public class UserServiceImpl implements UserService {
         UserEntity storedUserDetails = userRepository.save(userEntity);
 
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
+
+        // Send an email message to user to verify their email address
+        new AmazonSES().verifyEmail(returnValue);
 
         return returnValue;
     }
