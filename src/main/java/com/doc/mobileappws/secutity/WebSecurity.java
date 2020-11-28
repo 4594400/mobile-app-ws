@@ -27,9 +27,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL_URL)
                 .permitAll()
-                .anyRequest()
-                .authenticated()
-        .and()
+                .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_REQUEST_EMAIL_URL)
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
         .addFilter(getAuthenticationFilter())
         .addFilter(new AuthorizationFilter(authenticationManager()))
         .sessionManagement()            // session won't be created, authorization by request

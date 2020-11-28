@@ -1,6 +1,8 @@
 package com.doc.mobileappws.service.impl;
 
 import com.doc.mobileappws.dto.AddressDto;
+import com.doc.mobileappws.entity.PasswordResetTokenEntity;
+import com.doc.mobileappws.repository.PasswordResetTokenRepository;
 import com.doc.mobileappws.repository.UserRepository;
 import com.doc.mobileappws.dto.UserDto;
 import com.doc.mobileappws.entity.UserEntity;
@@ -15,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PasswordResetTokenRepository passwordResetTokenRepository;
     @Autowired
     Utils utils;
     @Override
@@ -146,6 +149,29 @@ public class UserServiceImpl implements UserService {
                 returnValue = true;
             }
         }
+
+        return returnValue;
+    }
+
+    @Override
+    public boolean requestPasswordReset(String email) {
+        boolean returnValue = false;
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if(userEntity == null){
+            return returnValue;
+        }
+        String token = new Utils().generatePasswordResetToken(userEntity.getUserId());
+
+        PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+        passwordResetTokenEntity.setToken(token);
+        passwordResetTokenEntity.setUserDetails(userEntity);
+        passwordResetTokenRepository.save(passwordResetTokenEntity);
+
+        returnValue = new AmazonSES().sendPasswordResetRequest(
+                userEntity.getFirstName(),
+                userEntity.getEmail(),
+                token
+        );
 
         return returnValue;
     }
