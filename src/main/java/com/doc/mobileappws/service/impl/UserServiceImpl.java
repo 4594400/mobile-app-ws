@@ -36,6 +36,8 @@ public class UserServiceImpl implements UserService {
     PasswordResetTokenRepository passwordResetTokenRepository;
     @Autowired
     Utils utils;
+    @Autowired
+    AmazonSES amazonSES;
     @Override
     public UserDto createUser(UserDto user) {
         if (userRepository.findByEmail(user.getEmail()) != null)
@@ -62,7 +64,7 @@ public class UserServiceImpl implements UserService {
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
 
         // Send an email message to user to verify their email address
-        new AmazonSES().verifyEmail(returnValue);
+        amazonSES.verifyEmail(returnValue);
 
         return returnValue;
     }
@@ -167,7 +169,7 @@ public class UserServiceImpl implements UserService {
         passwordResetTokenEntity.setUserDetails(userEntity);
         passwordResetTokenRepository.save(passwordResetTokenEntity);
 
-        returnValue = new AmazonSES().sendPasswordResetRequest(
+        returnValue = amazonSES.sendPasswordResetRequest(
                 userEntity.getFirstName(),
                 userEntity.getEmail(),
                 token

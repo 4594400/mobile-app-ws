@@ -5,12 +5,14 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import com.doc.mobileappws.dto.UserDto;
+import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.Email;
 
 /**
  * Amazon simple email service
  */
+@Service
 public class AmazonSES {
     // This address must be verified with Amazon SES.
     final String FROM = "4amazonws@gmail.com";
