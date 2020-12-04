@@ -23,6 +23,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:2.3.8'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'com.amazonaws:aws-java-sdk-ses:1.11.900'
+    implementation 'com.amazonaws:aws-java-sdk-sts:1.11.900' // TODO delete
     compileOnly 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

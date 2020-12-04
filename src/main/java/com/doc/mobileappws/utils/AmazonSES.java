@@ -113,6 +113,7 @@ public class AmazonSES {
             System.out.println(result.getSdkResponseMetadata());
             returnValue = true;
         }
+        System.out.println("Email sent! token = " + token);
 
         return returnValue;
     }
