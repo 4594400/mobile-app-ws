@@ -31,12 +31,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_URL)
                 .permitAll()
+                .antMatchers(SecurityConstants.H2_CONSOLE)
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
         .addFilter(getAuthenticationFilter())
         .addFilter(new AuthorizationFilter(authenticationManager()))
         .sessionManagement()            // session won't be created, authorization by request
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.headers().frameOptions().disable(); // to open h2-console in browser, only for testing, not commit
     }
 
     @Override
