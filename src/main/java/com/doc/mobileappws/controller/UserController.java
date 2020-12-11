@@ -96,13 +96,10 @@ public class UserController {
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
     public UserRest updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) {
-        UserRest returnValue = new UserRest();
+        UserDto userDto = new ModelMapper().map(userDetails, UserDto.class);
+        UserDto updateUser = userService.updateUser(id, userDto);
 
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
-
-        UserDto updatedUser = userService.updateUser(id, userDto);
-        BeanUtils.copyProperties(updatedUser, returnValue);
+        UserRest returnValue = new ModelMapper().map(updateUser, UserRest.class);
 
         return returnValue;
     }
