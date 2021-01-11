@@ -25,7 +25,7 @@ dependencies {
     implementation 'com.amazonaws:aws-java-sdk-ses:1.11.900'
     implementation 'com.amazonaws:aws-java-sdk-sts:1.11.900' // TODO delete
     compileOnly 'org.springframework.boot:spring-boot-starter-tomcat'
-    compileOnly 'com.h2database:h2'
+    //compileOnly 'com.h2database:h2'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
