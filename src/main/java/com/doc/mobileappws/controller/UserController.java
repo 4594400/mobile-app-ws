@@ -8,6 +8,9 @@ import com.doc.mobileappws.model.request.UserDetailsRequestModel;
 import com.doc.mobileappws.model.response.*;
 import com.doc.mobileappws.service.AddressService;
 import com.doc.mobileappws.service.UserService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
@@ -40,20 +43,25 @@ public class UserController {
      * @param limit
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorization", value="${userController.authorizationHeader.description}", paramType = "header")})
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "2") int limit){
         List<UserRest> returnValue = new ArrayList<>();
         List<UserDto> users = userService.getUsers(page, limit);
-        for(UserDto userDto : users){
+        Type listType = new TypeToken<List<UserRest>>(){}.getType();
+        returnValue = new ModelMapper().map(users, listType);
+        /*for(UserDto userDto : users){
             UserRest userRest = new UserRest();
             BeanUtils.copyProperties(userDto, userRest);
             returnValue.add(userRest);
-        }
+        }*/
 
         return returnValue;
     }
 
+    @ApiOperation(value = "The Get User Details Web Service Endpoint", notes = "${userController.GetUser.ApiOperation.Notes}")
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE,  // first MediaType it is default returning type
             MediaType.APPLICATION_JSON_VALUE})
     public UserRest getUser(@PathVariable String id) {
