@@ -1,5 +1,6 @@
 package com.doc.mobileappws.secutity;
 
+import com.doc.mobileappws.repository.UserRepository;
 import com.doc.mobileappws.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -19,10 +20,12 @@ import java.util.Arrays;
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final UserService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
 
-    public WebSecurity(UserService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebSecurity(UserService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder,  UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
         .addFilter(getAuthenticationFilter())
-        .addFilter(new AuthorizationFilter(authenticationManager()))
+        .addFilter(new AuthorizationFilter(authenticationManager(), userRepository))
         .sessionManagement()            // session won't be created, authorization by request
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

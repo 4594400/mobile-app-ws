@@ -1,5 +1,8 @@
 package com.doc.mobileappws.secutity;
 
+import com.doc.mobileappws.UserPrincipal;
+import com.doc.mobileappws.entity.UserEntity;
+import com.doc.mobileappws.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,8 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
-    public AuthorizationFilter(AuthenticationManager authenticationManager) {
+    private final UserRepository userRepository;
+    public AuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -40,7 +45,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                     .getBody()
                     .getSubject();
             if(user != null){
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                UserEntity userEntity = userRepository.findByEmail(user);
+                UserPrincipal userPrincipal = new UserPrincipal(userEntity);
+                return new UsernamePasswordAuthenticationToken(user, null, userPrincipal.getAuthorities());
             }
             return null;
         }

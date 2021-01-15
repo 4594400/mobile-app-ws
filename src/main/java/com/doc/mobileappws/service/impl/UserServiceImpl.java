@@ -1,5 +1,6 @@
 package com.doc.mobileappws.service.impl;
 
+import com.doc.mobileappws.UserPrincipal;
 import com.doc.mobileappws.dto.AddressDto;
 import com.doc.mobileappws.entity.PasswordResetTokenEntity;
 import com.doc.mobileappws.repository.PasswordResetTokenRepository;
@@ -74,10 +75,14 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByEmail(email);
         if(userEntity == null) throw new UsernameNotFoundException(email);
 
+        return new UserPrincipal(userEntity);
+
+
+        //return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), userEntity.getEmailVerificationStatus(),
+        //        true, true,true, new ArrayList<>());
+
         //return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
 
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), userEntity.getEmailVerificationStatus(),
-        true, true,true, new ArrayList<>());
     }
 
     @Override

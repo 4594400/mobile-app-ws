@@ -2,11 +2,15 @@ package com.doc.mobileappws;
 
 import com.doc.mobileappws.entity.AuthorityEntity;
 import com.doc.mobileappws.entity.RoleEntity;
+import com.doc.mobileappws.entity.UserEntity;
 import com.doc.mobileappws.repository.AuthorityRepository;
 import com.doc.mobileappws.repository.RoleRepository;
+import com.doc.mobileappws.repository.UserRepository;
+import com.doc.mobileappws.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +23,15 @@ public class InitialUsersSetup {
     AuthorityRepository authorityRepository;
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    Utils utils;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    UserRepository userRepository;
+
     @EventListener
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event){
@@ -28,8 +41,21 @@ public class InitialUsersSetup {
         AuthorityEntity writeAuthority = createAuthority("WRITE_AUTHORITY");
         AuthorityEntity deleteAuthority = createAuthority("DELETE_AUTHORITY");
 
-        createRole("ROLE_USER", Arrays.asList(readAuthority, writeAuthority));
-        createRole("ROLE_ADMIN", Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
+        RoleEntity roleUser = createRole("ROLE_USER", Arrays.asList(readAuthority, writeAuthority));
+        RoleEntity roleAdmin = createRole("ROLE_ADMIN", Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
+
+        if(roleAdmin == null) return;
+
+        UserEntity adminUser = new UserEntity();
+        adminUser.setFirstName("Mike");
+        adminUser.setLastName("Ivanov");
+        adminUser.setEmail("4amazomws@gmail.com");
+        adminUser.setEmailVerificationStatus(true);
+        adminUser.setUserId(utils.generateUserId(30));
+        adminUser.setEncryptedPassword(bCryptPasswordEncoder.encode("12345678"));
+        adminUser.setRoles(Arrays.asList(roleAdmin));
+
+        userRepository.save(adminUser);
 
     }
 

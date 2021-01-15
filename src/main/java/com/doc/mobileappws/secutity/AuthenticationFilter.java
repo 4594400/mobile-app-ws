@@ -1,6 +1,7 @@
 package com.doc.mobileappws.secutity;
 
 import com.doc.mobileappws.SpringApplicationContext;
+import com.doc.mobileappws.UserPrincipal;
 import com.doc.mobileappws.dto.UserDto;
 import com.doc.mobileappws.model.request.UserLoginRequestModel;
 import com.doc.mobileappws.service.UserService;
@@ -56,7 +57,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String userName = ((User) authResult.getPrincipal()).getUsername();
+        String userName = ((UserPrincipal) authResult.getPrincipal()).getUsername();
         String token = Jwts.builder()
                 .setSubject(userName)
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
