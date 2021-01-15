@@ -52,7 +52,7 @@ public class InitialUsersSetup {
         adminUser.setEmail("4amazomws@gmail.com");
         adminUser.setEmailVerificationStatus(true);
         adminUser.setUserId(utils.generateUserId(30));
-        adminUser.setEncryptedPassword(bCryptPasswordEncoder.encode("12345678"));
+        adminUser.setEncryptedPassword(bCryptPasswordEncoder.encode("123456"));
         adminUser.setRoles(Arrays.asList(roleAdmin));
 
         userRepository.save(adminUser);

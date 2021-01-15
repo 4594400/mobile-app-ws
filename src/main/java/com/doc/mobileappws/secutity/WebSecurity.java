@@ -47,6 +47,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
                 .permitAll()
+                .antMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN") // or .hasAuthority("DELETE_AUTHORITY"); also can use .hasAnyAuthority("DELETE_AUTHORITY", "DELETE_SOME_AUTHORITY"), hasAnyRole(..)
                 .anyRequest().authenticated()
                 .and()
         .addFilter(getAuthenticationFilter())
