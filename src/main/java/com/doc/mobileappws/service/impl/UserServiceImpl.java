@@ -3,7 +3,9 @@ package com.doc.mobileappws.service.impl;
 import com.doc.mobileappws.UserPrincipal;
 import com.doc.mobileappws.dto.AddressDto;
 import com.doc.mobileappws.entity.PasswordResetTokenEntity;
+import com.doc.mobileappws.entity.RoleEntity;
 import com.doc.mobileappws.repository.PasswordResetTokenRepository;
+import com.doc.mobileappws.repository.RoleRepository;
 import com.doc.mobileappws.repository.UserRepository;
 import com.doc.mobileappws.dto.UserDto;
 import com.doc.mobileappws.entity.UserEntity;
@@ -25,6 +27,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -39,6 +43,8 @@ public class UserServiceImpl implements UserService {
     Utils utils;
     @Autowired
     AmazonSES amazonSES;
+    @Autowired
+    RoleRepository roleRepository;
     @Override
     public UserDto createUser(UserDto user) {
         if (userRepository.findByEmail(user.getEmail()) != null)
@@ -59,6 +65,17 @@ public class UserServiceImpl implements UserService {
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
         userEntity.setEmailVerificationStatus(false);
+
+        // Set roles
+        Collection<RoleEntity> roleEntities = new HashSet<>();
+        for(String role: user.getRoles()){
+            RoleEntity roleEntity = roleRepository.findByName(role);
+            if(roleEntity != null){
+                roleEntities.add(roleEntity);
+            }
+        }
+
+        userEntity.setRoles(roleEntities);
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 

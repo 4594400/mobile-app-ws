@@ -8,6 +8,7 @@ import com.doc.mobileappws.model.request.UserDetailsRequestModel;
 import com.doc.mobileappws.model.response.*;
 import com.doc.mobileappws.service.AddressService;
 import com.doc.mobileappws.service.UserService;
+import com.doc.mobileappws.utils.Roles;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -21,12 +22,14 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -63,6 +66,7 @@ public class UserController {
         return returnValue;
     }
 
+    @PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
     @ApiOperation(value = "The Get User Details Web Service Endpoint", notes = "${userController.GetUser.ApiOperation.Notes}")
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE,  // first MediaType it is default returning type
             MediaType.APPLICATION_JSON_VALUE})
@@ -95,6 +99,7 @@ public class UserController {
 
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+        userDto.setRoles(new HashSet<>(Arrays.asList(Roles.ROLE_USER.name())));
 
         UserDto createdUser = userService.createUser(userDto);
         returnValue = modelMapper.map(createdUser, UserRest.class);
