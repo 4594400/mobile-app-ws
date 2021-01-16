@@ -115,7 +115,7 @@ public class UserController {
         return returnValue;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     // @PreAuthorize("hasAuthority('DELETE_AUTHORITY')"
     //@Secured("ROLE_ADMIN")
     @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
