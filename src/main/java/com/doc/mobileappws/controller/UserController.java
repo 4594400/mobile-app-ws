@@ -21,6 +21,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Type;
@@ -114,7 +115,9 @@ public class UserController {
         return returnValue;
     }
 
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasAuthority('DELETE_AUTHORITY')"
+    //@Secured("ROLE_ADMIN")
     @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public OperationStatusModel deleteUser(@PathVariable String id) {
         OperationStatusModel returnValue = new OperationStatusModel();
