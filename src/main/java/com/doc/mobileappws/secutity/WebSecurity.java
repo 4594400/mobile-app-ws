@@ -5,6 +5,7 @@ import com.doc.mobileappws.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final UserService userDetailsService;
@@ -47,7 +49,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
                 .permitAll()
-                .antMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN") // or .hasAuthority("DELETE_AUTHORITY"); also can use .hasAnyAuthority("DELETE_AUTHORITY", "DELETE_SOME_AUTHORITY"), hasAnyRole(..)
+                //.antMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN") // or .hasAuthority("DELETE_AUTHORITY"); also can use .hasAnyAuthority("DELETE_AUTHORITY", "DELETE_SOME_AUTHORITY"), hasAnyRole(..)
                 .anyRequest().authenticated()
                 .and()
         .addFilter(getAuthenticationFilter())
